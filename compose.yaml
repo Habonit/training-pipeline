@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.0-pg17
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env-api
+      - ./postgres/.env
+      - ./src/eng_correct/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./postgres/entrypoint.sh:/docker-entrypoint-initdb.d/02_grant.sh
+      - ./:/usr/local/project         
+    networks:
+      train-server:
+        aliases:
+          - db
+        ipv4_address: 10.20.0.10
+
+  airflow:
+    image: custom-airflow:latest
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    container_name: airflow
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    env_file:
+      - .env-api
+      - ./airflow/.env
+      - ./src/eng_correct/.env
+    environment:
+      AIRFLOW_ROLE: webserver
+      PYTHONPATH: /usr/local/project
+    volumes:
+      - ./:/usr/local/project       
+    ports:
+      - "8080:8080"
+    networks:
+      train-server:
+        aliases:
+          - airflow
+        ipv4_address: 10.20.0.20
+
+  airflow_scheduler:
+    image: custom-airflow:latest
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    container_name: airflow_scheduler
+    depends_on:
+      - airflow
+    env_file:
+      - .env-api
+      - ./airflow/.env
+      - ./src/eng_correct/.env
+    environment:
+      AIRFLOW_ROLE: scheduler
+      PYTHONPATH: /usr/local/project
+    volumes:
+      - ./:/usr/local/project        
+    networks:
+      train-server:
+        aliases:
+          - scheduler
+        ipv4_address: 10.20.0.21
+
+  mlflow:
+    image: custom-mlflow:latest
+    build:
+      context: .
+      dockerfile: mlflow/Dockerfile
+    container_name: mlflow
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    env_file:
+      - .env-api
+      - ./mlflow/.env
+      - ./src/eng_correct/.env
+    environment:
+      PYTHONPATH: /usr/local/project
+    volumes:
+      - ./:/usr/local/project        
+      - ./mlflow/mlruns:/mlflow/mlruns
+    ports:
+      - "5000:5000"
+    networks:
+      train-server:
+        aliases:
+          - mlflow
+        ipv4_address: 10.20.0.30
+
+volumes:
+  pgdata:
+
+networks:
+  train-server:
+    name: train-server
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.20.0.0/16

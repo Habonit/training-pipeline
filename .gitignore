@@ -1,3 +1,10 @@
+## 타 프로젝트에서 따오느라 불필요하게 포함된 내용입니다.
+## 사용하실 땐 이 부분을 지워도 됩니다. 
+airflow/dags/data_generation.py
+eng_correct/
+.env-api
+test.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

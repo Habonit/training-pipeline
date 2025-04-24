@@ -1,0 +1,8 @@
+sqlalchemy 
+psycopg2-binary 
+python-dotenv
+openai>=1.3.0
+idna
+httpx
+loguru
+argparse
