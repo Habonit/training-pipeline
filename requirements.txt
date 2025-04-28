@@ -6,3 +6,4 @@ idna
 httpx
 loguru
 argparse
+python-dotenv
