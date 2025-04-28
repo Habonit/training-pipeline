@@ -11,8 +11,10 @@
 ## 실행 방법
 
 ```bash
+# ~/.ssh 경로에 개인 key 등록 후 진행할 것
+
 # 1. 레포지토리 클론
-git clone https://github.com/Habonit/training-pipeline.git
+git clone git@github.com:Trust-Laboratory/train.git
 
 # 2. 프로젝트 디렉토리로 이동
 cd training-pipeline
