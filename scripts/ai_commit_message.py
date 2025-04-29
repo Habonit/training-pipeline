@@ -18,6 +18,7 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 
 diff = sys.argv[1]
+diff = diff[:3000]
 
 with open(template_path, "r") as f:
     prompt_template = f.read()
