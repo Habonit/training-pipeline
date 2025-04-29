@@ -20,13 +20,8 @@ git clone git@github.com:Trust-Laboratory/train.git
 cd training-pipeline
 
 # 3. 환경변수 설정
-# openai API 키 포함한 .env-api → .env 복사
-cp .env-api .env
-
-# airflow, mlflow, postgres 전용 env 파일 복사
-cp airflow/.env.example airflow/.env
-cp mlflow/.env.example mlflow/.env
-cp postgres/.env.example postgres/.env
+# openai API 키 포함한 .env.example → .env 복사
+cp .env.example .env
 
 # 4. 도커 컴포즈 실행
 docker compose up -d --build

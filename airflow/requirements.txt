@@ -6,3 +6,4 @@ scikit-learn
 loguru
 python-dotenv
 openai
+openpyxl
